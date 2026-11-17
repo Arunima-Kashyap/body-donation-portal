@@ -7,3 +7,5 @@ __pycache__/
 *.pyc
 .vscode
 backend/app/populate_db
+frontend/.env
+node_modules/
