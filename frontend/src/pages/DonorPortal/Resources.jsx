@@ -1,109 +1,195 @@
-import { Reveal, display, serif } from "./ui";
-import { Band, Icon } from "./graphics";
 
-const TOPICS = [
+import { display, serif } from "./ui";
+
+const guides = [
   {
-    id: "understanding", icon: "heart", title: "Understanding body donation", bg: "bg-[#F2F0E8]", frame: "bg-[#DCE5DD]",
-    body: [
-      "Body donation is the decision to give your body to a medical institution after your death so that students can learn from it.",
-      "It is separate from organ donation. Organs are transplanted to patients who need them, while a donated body is used for anatomy teaching and study. The two are different decisions, and an institution may have its own rules about both, so ask the institution you have in mind.",
-    ],
+    id: "understanding",
+    number: "01",
+    category: "THE BASICS",
+    title: "Understanding Body Donation",
+    description: "What whole-body donation means, how it differs from organ donation, and what generally happens after a person expresses an intention to donate.",
+    reading: "5 min read",
+    accent: "sage",
   },
   {
-    id: "education", icon: "book", title: "How anatomy education works", bg: "bg-[#E8EEEA]", frame: "bg-[#F8F7F2]",
-    body: [
-      "Anatomy is where medical students first see how the body is built and how its parts relate to one another.",
-      "Working with a donated body shows how much people differ from one another, which diagrams and models cannot. Institutions generally teach students to treat every donor with respect.",
-    ],
+    id: "education",
+    number: "02",
+    category: "MEDICAL EDUCATION",
+    title: "The Role of Anatomy in Medicine",
+    description: "How donated bodies contribute to anatomical learning, medical training and a deeper understanding of the human body.",
+    reading: "4 min read",
+    accent: "clay",
   },
   {
-    id: "ethics", icon: "scale", title: "Ethics, dignity and consent", bg: "bg-[#F2F0E8]", frame: "bg-[#EDE5D1]",
-    body: [
-      "Consent has to be informed and voluntary. That is why LifeBridge asks you to read and accept a declaration, and to name witnesses who confirm that the decision was your own.",
-      "Submitting consent does not guarantee acceptance by an institution. Your status page shows what has been confirmed and what is still pending.",
-    ],
+    id: "ethics",
+    number: "03",
+    category: "ETHICS & CONSENT",
+    title: "Consent, Choice & Dignity",
+    description: "Informed consent, personal autonomy, ethical responsibilities, privacy and the questions a donor should feel able to ask.",
+    reading: "5 min read",
+    accent: "blue",
   },
   {
-    id: "families", icon: "home", title: "Guidance for families", bg: "bg-[#EBDAD2]", frame: "bg-[#F2E8E2]",
-    body: [
-      "Tell the people close to you. Family members are often the ones who must act when the time comes, and a donor’s wishes are easier to honour when they are known in advance.",
-      "Share the name of your preferred institution and let them know where your registration details are kept. A calm conversation now spares your family uncertainty later.",
-    ],
+    id: "institutions",
+    number: "04",
+    category: "LAW & PROCEDURE",
+    title: "Institutions, Law & Acceptance",
+    description: "The legal framework in Odisha, institutional procedures, acceptance decisions and what to clarify before registering.",
+    reading: "7 min read",
+    accent: "teal",
+  },
+  {
+    id: "families",
+    number: "05",
+    category: "FAMILY GUIDANCE",
+    title: "A Guide for Families",
+    description: "How to communicate a donation decision, prepare documents, contact an institution and make alternative arrangements.",
+    reading: "5 min read",
+    accent: "sage",
+  },
+  {
+    id: "questions",
+    number: "06",
+    category: "QUICK REFERENCE",
+    title: "Frequently Asked Questions",
+    description: "Direct answers to common questions about whole-body donation and what the LifeBridge portal does—and does not—do.",
+    reading: "6 min read",
+    accent: "clay",
   },
 ];
 
-const FAQS = [
-  ["What does registering on LifeBridge involve?", "You complete a consent form, name two witnesses, and accept a declaration. Your witnesses are then asked to confirm, and your status updates on the Home page."],
-  ["Who confirms my consent?", "The witnesses you name on your form. They confirm that your decision is voluntary."],
-  ["Does submitting consent guarantee that an institution will accept me?", "No. Acceptance is the institution’s decision, which is why your status page keeps registration and institution updates separate."],
-  ["What happens after my witnesses confirm?", "Your registration becomes active, a confirmation is emailed to you, and your status on the Home page updates."],
-  ["Should I tell my family?", "Yes, if you can. It helps them understand and carry out your wishes. The family guidance above is a good place to start."],
-];
-
-const jump = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-
-export default function Resources() {
+function Eyebrow({ children, light = false }) {
   return (
-    <div className="text-[#292F2D]">
-      <Band bg="bg-[#F2E8E2]">
-        <Reveal>
-          <h1 style={display} className="text-4xl text-[#292F2D] md:text-5xl">Resource centre</h1>
-          <p className="mt-3 max-w-xl text-lg leading-relaxed text-[#68716D]">
-            Plain answers to what donors and their families ask most. Read what is useful and leave the rest.
+    <p className={`text-[10px] font-semibold uppercase tracking-[0.16em] ${light ? "text-[#D9C58E]" : "text-[#9A6957]"}`}>
+      {children}
+    </p>
+  );
+}
+
+function GuideCard({ guide, onOpenGuide }) {
+  const accents = {
+    sage: "#AABFC0",
+    clay: "#C98269",
+    blue: "#AABFC0",
+    teal: "#214F50",
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={() => onOpenGuide(guide.id)}
+      className="group relative flex min-h-[205px] flex-col overflow-hidden border border-[#DCDDD4] bg-[#F8F7F2] p-5 text-left transition-colors duration-300 hover:border-[#AABFC0] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#214F50] md:min-h-[215px] md:p-6"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-16 -right-14 h-36 w-36 rounded-full opacity-[0.13] transition-transform duration-500 group-hover:scale-110"
+        style={{ backgroundColor: accents[guide.accent] }}
+      />
+
+      <div className="relative z-10 grid flex-1 grid-cols-[3.3rem_minmax(0,1fr)] gap-4">
+        <div className="border-r border-[#C98269]/50 pr-3">
+          <span style={display} className="text-3xl leading-none text-[#A59D87] md:text-4xl">
+            {guide.number}
+          </span>
+        </div>
+
+        <div className="flex min-w-0 flex-col">
+          <Eyebrow>{guide.category}</Eyebrow>
+
+          <h3 style={serif} className="mt-2.5 max-w-sm text-[21px] leading-[1.16] text-[#214F50] md:text-[23px]">
+            {guide.title}
+          </h3>
+
+          <p className="mt-3 max-w-sm text-[13px] leading-[1.65] text-[#68716D]">
+            {guide.description}
           </p>
-          <div className="mt-8 grid gap-x-8 gap-y-4 sm:grid-cols-2 xl:grid-cols-5">
-            {[...TOPICS.map((t) => [t.id, t.title, t.icon]), ["faq", "Common questions", "doc"]].map(([id, t, icon]) => (
-              <button key={id} onClick={() => jump(id)} className="flex items-center gap-3 border-t border-[#C98269]/40 pt-4 text-left transition-opacity hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#214F50]">
-                <span className="text-[#214F50]"><Icon name={icon} className="h-6 w-6" /></span>
-                <span className="text-base text-[#292F2D]">{t}</span>
-              </button>
-            ))}
+
+          <div className="mt-auto flex items-center justify-between gap-3 pt-4">
+            <span className="text-[13px] font-medium text-[#214F50] transition-colors group-hover:text-[#9A6957]">
+              Read the guide
+            </span>
+            <span className="text-[11px] text-[#68716D]">{guide.reading}</span>
           </div>
-        </Reveal>
-      </Band>
+        </div>
+      </div>
+    </button>
+  );
+}
 
-      {TOPICS.map((t, i) => (
-        <Band key={t.id} bg={t.bg}>
-          <Reveal>
-            <article id={t.id} className="grid scroll-mt-24 items-center gap-10 lg:grid-cols-12">
-              <div className={`lg:col-span-4 ${i % 2 ? "lg:order-2" : ""}`}>
-                <div className={`mx-auto flex aspect-[3/4] w-full max-w-[16rem] items-center justify-center rounded-t-full text-[#214F50] ${t.frame}`}>
-                  <Icon name={t.icon} className="h-20 w-20" />
-                </div>
-              </div>
-              <div className="lg:col-span-8">
-                <h2 style={display} className="text-2xl text-[#292F2D] md:text-3xl">{t.title}</h2>
-                <div className="mt-4 max-w-2xl space-y-4 text-lg leading-relaxed text-[#292F2D]/85">
-                  {t.body.map((p) => <p key={p}>{p}</p>)}
-                </div>
-              </div>
-            </article>
-          </Reveal>
-        </Band>
-      ))}
+export default function Resources({ onOpenGuide }) {
+  return (
+    <div className="overflow-hidden bg-[#F8F7F2] text-[#292F2D]">
+      <header className="relative overflow-hidden border-b border-[#DCDDD4] bg-[#F2F0E8]">
+        <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-36 h-[30rem] w-[30rem] rounded-full border border-[#214F50]/15 md:right-[-4rem] md:top-[-15rem] md:h-[40rem] md:w-[40rem]" />
+        <div aria-hidden="true" className="pointer-events-none absolute -bottom-40 right-[-5rem] h-72 w-72 rounded-full bg-[#AABFC0]/45" />
+        <div aria-hidden="true" className="pointer-events-none absolute -bottom-52 right-12 h-64 w-64 rounded-full bg-[#C98269]/35" />
 
-      <Band bg="bg-[#EDF1EE]">
-        <Reveal>
-          <section id="faq" className="grid scroll-mt-24 gap-10 lg:grid-cols-12">
-            <div className="lg:col-span-4">
-              <h2 style={display} className="text-2xl text-[#292F2D] md:text-3xl">Common questions</h2>
-              <p className="mt-3 max-w-xs text-base leading-relaxed text-[#68716D]">
-                Rules differ between institutions. For anything not covered here, contact the institution you named on your form.
-              </p>
-            </div>
-            <div className="divide-y divide-[#DCDDD4] border-y border-[#DCDDD4] lg:col-span-8">
-              {FAQS.map(([q, a]) => (
-                <details key={q} className="group py-5">
-                  <summary style={serif} className="cursor-pointer list-none text-xl text-[#292F2D] marker:content-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#214F50]">
-                    {q}
-                  </summary>
-                  <p className="mt-3 max-w-2xl text-base leading-relaxed text-[#68716D]">{a}</p>
-                </details>
-              ))}
-            </div>
-          </section>
-        </Reveal>
-      </Band>
+        <div className="relative mx-auto max-w-7xl px-6 py-12 md:px-12 md:py-16">
+          <div className="max-w-2xl">
+            <Eyebrow>THE LIFEBRIDGE LIBRARY</Eyebrow>
+
+            <h1 style={display} className="mt-4 text-[3.2rem] leading-[0.98] tracking-[-0.04em] text-[#214F50] md:text-[4.6rem]">
+              Resources Library
+            </h1>
+
+            <p style={serif} className="mt-4 text-lg italic text-[#292F2D] md:text-xl">
+              Trusted information. Thoughtful guidance.
+            </p>
+
+            <div className="mt-5 h-px w-16 bg-[#C98269]" />
+
+            <p className="mt-4 max-w-xl text-sm leading-6 text-[#68716D]">
+              Explore clear, considered guides to whole-body donation, medical education, consent, institutional procedures and family preparation. Start with the basics, or go directly to the subject you want to understand.
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-7xl px-6 py-10 md:px-12 md:py-14">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#DCDDD4] pb-5">
+          <div>
+            <Eyebrow>EXPLORE THE LIBRARY</Eyebrow>
+            <h2 style={display} className="mt-2 text-2xl leading-tight text-[#214F50] md:text-3xl">
+              Six guides, one subject.
+            </h2>
+          </div>
+          <p className="max-w-xs text-[13px] leading-5 text-[#68716D]">
+            Read in sequence or choose the subject most relevant to your questions.
+          </p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          {guides.map((guide) => (
+            <GuideCard key={guide.id} guide={guide} onOpenGuide={onOpenGuide} />
+          ))}
+        </div>
+
+        <div className="mt-11 grid gap-4 border-t border-[#DCDDD4] pt-6 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
+          <div>
+            <Eyebrow>EDUCATIONAL RESOURCES · INDIA / ODISHA</Eyebrow>
+            <h2 style={display} className="mt-3 max-w-sm text-2xl leading-tight text-[#214F50] md:text-3xl">
+              Information first. No assumptions.
+            </h2>
+          </div>
+          <p className="max-w-2xl text-[13px] leading-6 text-[#68716D]">
+            These resources are written for readers in India, with particular reference to the legal framework in Odisha. Institutional procedures differ. Always confirm current requirements with the institution concerned.
+          </p>
+        </div>
+
+        <section className="relative mt-12 overflow-hidden rounded-xl bg-[#214F50] px-6 py-8 text-[#F8F7F2] md:px-9 md:py-10">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-32 h-64 w-64 rounded-full border border-[#AABFC0]/25" />
+          <div className="relative max-w-2xl">
+            <Eyebrow light>A NOTE ABOUT LIFEBRIDGE</Eyebrow>
+            <h2 style={display} className="mt-3 text-2xl leading-tight text-[#F8F7F2] md:text-3xl">
+              A place to record your intention.
+            </h2>
+            <div className="mt-4 h-px w-16 bg-[#C98269]" />
+            <p className="mt-4 text-[13px] leading-6 text-[#DCE5DD]">
+              LifeBridge is a declaration-recording portal. It is not a medical institution, does not receive donated bodies and does not currently have registered medical institution partners. A portal record does not guarantee institutional acceptance.
+            </p>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
